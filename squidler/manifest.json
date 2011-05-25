@@ -1,0 +1,19 @@
+{
+  "name": "Squidler",
+  "version": "0.0.1",
+  "description": "Displays the id and class structure of a web page.",
+  "icons": {
+    "16": "media/icon-16.png",
+    "32": "media/icon-32.png",
+    "48": "media/icon-48.png",
+    "128": "media/icon-128.png",
+    "256": "media/icon-256.png"
+  },
+  "permissions": [
+    "contextMenus",
+    "tabs",
+    "http://*/",
+    "https://*/"
+  ],
+  "background_page": "background.html"
+}
