@@ -7,12 +7,16 @@ var app = express.createServer();
 var port = 60606;
 
 app.set('view engine', 'ejs');
+app.set('view options', { layout: false });
 app.get('/', function(req, res) {
-  sysinfo.getName(function(name) {
+  console.log(req.method + ' ' +
+    req.url +
+    ' from ' + req.client.remoteAddress + ':' + req.client.remotePort + 
+    ' [' + req.headers['user-agent'] + ']');
+  sysinfo.getEverything(function(model) {
     res.render('main', {
-      layout: false,
-      locals: { name: name }
-    });   
+      locals: model
+    });
   });
 });
 
