@@ -1,14 +1,21 @@
 <!doctype html>
 <html>
   <head>
-    <meta lang="en">
+    <meta lang="en" />
     <title>sys-info</title>
+    <link rel="stylesheet" href="../styles/general.css" type="text/css" />
   </head>  
   <body>
     <div>
       <ul>
-        <li>Kernel name: <%= kernelName %></li>
-        <li>Node name: <%= nodeName %></li>
+        <li>
+          <label for="kernelName">Kernel name</label>
+          <span id="kernelName"><%= kernelName %></span>
+        </li>
+        <li>
+          <label for="nodeName">Node name</label>
+          <span id="nodeName"><%= nodeName %></span>
+        </li>
       </ul>
     </div>  
   </body>

@@ -2,6 +2,7 @@
 
 var sysinfo = require('./lib/system.js');
 var sys = require('sys');
+var fs = require('fs');
 require('ejs');
 var express = require('express');
 var app = express.createServer();
@@ -21,6 +22,14 @@ app.get('/', function(req, res) {
         locals: model
       });
     });
+});
+
+app.get('/styles/:file', function(req, res) {
+  fs.readFile(__dirname + '/styles/' + req.params.file, function(err, data) {
+    res.writeHead(200, {'Content-Type':'text/css'});
+    res.write(data);
+    res.end();
+  });
 });
 
 app.listen(port);
