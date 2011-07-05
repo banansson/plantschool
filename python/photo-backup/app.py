@@ -8,58 +8,68 @@
 import os
 import sys
 
-def usage(argv):
-  print "Usage: %s [dir]" % argv[0]
+class Support:
+  def __init__(self):
+    self.kilobyte = 1024
+    self.megabyte = self.kilobyte * 1024
+    self.terabyte = self.megabyte * 1024
+    self.petabyte = self.terabyte * 1024
 
-def weight(size):
-  kilobyte = 1024
-  megabyte = kilobyte * 1024
-  terabyte = megabyte * 1024
-  petabyte = terabyte * 1024
+  def weight(self, size):
+    if (size < self.kilobyte):
+      return (size, ' bytes')
+    if (size < self.megabyte):
+      return (size / self.kilobyte, 'kB')
+    if (size < self.terabyte):
+      return (size / self.megabyte, "MB")
+    if (size < self.petabyte):
+      return (size / self.terabyte, "GB")
 
-  if (size < kilobyte):
-    return (size, ' bytes')
-  if (size < megabyte):
-    return (size / kilobyte, 'kB')
-  if (size < terabyte):
-    return (size / megabyte, "MB")
-  if (size < petabyte):
-    return (size / terabyte, "GB")
+class App:
+  def __init__(self, support, arguments):
+    self.arguments = arguments
+    self.support = support
 
-def main(argv):
-  try:
-    requested = argv[1]
-  except:
-    usage(argv)
-    sys.exit(2)
+  def usage(self):
+    print "Usage: %s [dir]" % self.arguments[0]
 
-  source = os.path.expanduser(requested);
+  def run(self):
+    requested = self.arguments[1]
 
-  print 'Source: ' + source
+    # Validate source
+    source = os.path.expanduser(requested);
+    if not os.path.exists(source):
+      print 'No such location: ' + source
+      return 2
 
-  # Set the stage
-  os.chdir(source)
+    # Set the stage
+    os.chdir(source)
 
-  # Build the file list
-  sourceFiles = []
-  for root, dirs, files in os.walk(source):
-    for name in files:
-      current = os.path.join(root, name)
-      sourceFiles.append(current)
+    # Build the file list
+    sourceFiles = []
+    for root, dirs, files in os.walk(source):
+      for name in files:
+        current = os.path.join(root, name)
+        sourceFiles.append(current)
 
-  # Investigate result
-  fileCount = len(sourceFiles)
-  totalBytes = 0
-  for filePath in sourceFiles:
-    info = os.stat(filePath)
-    size = info.st_size
-    totalBytes += size
-    megabytes, postfix = weight(size) # float(size) / (1024 * 1024)
-    print '%s %.1f%s' % (filePath, megabytes, postfix)
+    # Investigate result
+    fileCount = len(sourceFiles)
+    totalBytes = 0
+    for filePath in sourceFiles:
+      info = os.stat(filePath)
+      size = info.st_size
+      totalBytes += size
+      weightedBytes, postfix = support.weight(size)
 
-  totalSize, totalSizePostfix = weight(totalBytes)
-  print '%d files %.1f%s (%d bytes)' % (fileCount, totalSize, totalSizePostfix, totalBytes)
+    totalSize, totalSizePostfix = support.weight(totalBytes)
+    return (fileCount, totalSize, totalSizePostfix, totalBytes)
 
 if __name__ == '__main__':
-  main(sys.argv)
+  support = Support()
+  app = App(support, sys.argv)
+  try:
+    (fileCount, totalSize, totalSizePostfix, totalBytes) = app.run()
+    print '%d files %.1f%s (%d bytes)' % (fileCount, totalSize, totalSizePostfix, totalBytes)
+  except:
+    app.usage()
 
