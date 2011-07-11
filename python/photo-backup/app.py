@@ -54,7 +54,7 @@ def main(argv):
     info = os.stat(filePath)
     size = info.st_size
     totalBytes += size
-    megabytes, postfix = weight(size) # float(size) / (1024 * 1024)
+    megabytes, postfix = weight(size)
     print '%s %.1f%s' % (filePath, megabytes, postfix)
 
   totalSize, totalSizePostfix = weight(totalBytes)
